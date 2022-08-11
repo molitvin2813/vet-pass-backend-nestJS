@@ -37,8 +37,8 @@ import { AnimalTypeTableModule } from './animal-type-table/animal-type-table.mod
       type: 'mysql',
       host: 'localhost',
       port: 3306,
-      username: 'root',
-      password: '1234',
+      username: 'admin',
+      password: '2813Andrei*',
       database: 'vet_pass',
       entities: [
         AnimalTable,
