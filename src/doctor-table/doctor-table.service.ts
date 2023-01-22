@@ -18,6 +18,8 @@ export class DoctorTableService {
         'doctor_table.fio',
         'doctor_table.color',
         'doctor_table.iddoctorTable',
+        'doctor_table.salary',
+        'doctor_table.isAdmin',
       ])
       .getMany();
   }
@@ -35,13 +37,28 @@ export class DoctorTableService {
         'doctor_table.fio',
         'doctor_table.color',
         'doctor_table.login',
+        'doctor_table.salary',
         'doctor_table.iddoctorTable',
+        'doctor_table.isAdmin',
       ])
       .getOne();
   }
 
   async getDoctorVisit(): Promise<DoctorTable[]> {
-    console.log('sss');
+    return await this.doctorRepository
+      .createQueryBuilder('doctor_table')
+      .select([
+        'doctor_table.fio',
+        'doctor_table.salary',
+        'doctor_table.color',
+        'doctor_table.iddoctorTable',
+        'doctor_table.isAdmin',
+      ])
+      .innerJoinAndSelect('doctor_table.visitTables', 'visitTables')
+      .getMany();
+  }
+
+  async getDoctorVisitByDate(date: Date): Promise<DoctorTable[]> {
     return await this.doctorRepository
       .createQueryBuilder('doctor_table')
       .select([
@@ -49,7 +66,12 @@ export class DoctorTableService {
         'doctor_table.color',
         'doctor_table.iddoctorTable',
       ])
+
       .innerJoinAndSelect('doctor_table.visitTables', 'visitTables')
+      .innerJoinAndSelect('visitTables.idAnimal2', 'idAnimal2')
+      .innerJoinAndSelect('visitTables.idDoctor2', 'idDoctor2')
+      .innerJoinAndSelect('visitTables.idReceipt2', 'idReceipt2')
+      .where('visitTables.visitTime = :visitTime', { visitTime: date })
       .getMany();
   }
 

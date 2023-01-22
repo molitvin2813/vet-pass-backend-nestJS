@@ -22,6 +22,24 @@ export class ListMaterialTable {
   @Column('int', { name: 'id_receipt', nullable: true })
   idReceipt: number | null;
 
+  @Column('decimal', {
+    name: 'count',
+    nullable: true,
+    precision: 10,
+    scale: 3,
+    default: () => "'0.000'",
+  })
+  count: string | null;
+
+  @Column('decimal', {
+    name: 'sum',
+    nullable: true,
+    precision: 10,
+    scale: 2,
+    default: () => "'0.00'",
+  })
+  sum: number | null;
+
   @ManyToOne(
     () => MaterialTable,
     (materialTable) => materialTable.listMaterialTables,

@@ -35,6 +35,24 @@ export class ListServiceTable {
   ])
   idService2: ServiceTable;
 
+  @Column('decimal', {
+    name: 'count',
+    nullable: true,
+    precision: 10,
+    scale: 3,
+    default: () => "'0.00'",
+  })
+  count: string | null;
+
+  @Column('decimal', {
+    name: 'sum',
+    nullable: true,
+    precision: 10,
+    scale: 2,
+    default: () => "'0.00'",
+  })
+  sum: number | null;
+
   @ManyToOne(
     () => ReceiptTable,
     (receiptTable) => receiptTable.listServiceTables,

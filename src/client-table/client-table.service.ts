@@ -21,12 +21,12 @@ export class ClientTableService {
         'client_table.comment',
         'client_table.login',
       ])
+      .orderBy('client_table.idClient', 'DESC')
       .getMany();
   }
 
-  async createClient(newClient: ClientTable): Promise<boolean> {
-    this.ClientRepository.insert(newClient);
-    return true;
+  async createClient(newClient: ClientTable) {
+    return this.ClientRepository.insert(newClient);
   }
 
   async getSomeClient(id: number): Promise<ClientTable> {
@@ -48,8 +48,7 @@ export class ClientTableService {
       idClient: id,
     });
     if (ClientForUpdate != null) {
-      await this.ClientRepository.update(id, client);
-      return true;
+      return await this.ClientRepository.update(id, client);
     }
     return false;
   }

@@ -1,6 +1,7 @@
 import { Column, Entity, OneToMany, PrimaryGeneratedColumn } from 'typeorm';
 import { StorageTable } from './StorageTable';
 import { ListMaterialTable } from './ListMaterialTable';
+import { LogTable } from './LogTable';
 
 @Entity('material_table', { schema: 'vet_pass' })
 export class MaterialTable {
@@ -13,23 +14,27 @@ export class MaterialTable {
   @Column('decimal', { name: 'cost', nullable: true, precision: 10, scale: 2 })
   cost: string | null;
 
-  @Column('int', {
-    name: 'expiration_date',
-    nullable: true,
-    comment: 'Срок годности',
-  })
-  expirationDate: number | null;
-
   @Column('decimal', {
-    name: 'dosage',
+    name: 'count',
     nullable: true,
     precision: 10,
-    scale: 2,
+    scale: 3,
+    default: () => "'0.000'",
+    comment: 'Количесвто товара на складе',
   })
-  dosage: string | null;
+  count: number | null;
+
+  @Column('varchar', { name: 'comment', nullable: true, length: 500 })
+  comment: string | null;
+
+  @Column('varchar', { name: 'measure', nullable: true, length: 20 })
+  measure: string | null;
 
   @OneToMany(() => StorageTable, (storageTable) => storageTable.idMaterial2)
   storageTables: StorageTable[];
+
+  @OneToMany(() => LogTable, (logTable) => logTable.idDoctor2)
+  logTables: LogTable[];
 
   @OneToMany(
     () => ListMaterialTable,

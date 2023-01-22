@@ -1,6 +1,7 @@
 import { Injectable } from '@nestjs/common';
 
 import { InjectRepository } from '@nestjs/typeorm';
+import { DateBetween } from 'src/DTO/dateBetween-dto';
 import { ListServiceTable } from 'src/entities/ListServiceTable';
 import { Repository } from 'typeorm';
 
@@ -20,8 +21,20 @@ export class ListServiceTableService {
       .getMany();
   }
 
-  async createServiceList(service: ListServiceTable) {
+  async getAllMaterialByDate(date: DateBetween) {
+    return await this.repository
+      .createQueryBuilder('list_service_table')
+      .leftJoinAndSelect('list_service_table.idService2', 'service')
+      .leftJoinAndSelect('list_service_table.idReceipt2', 'receipt')
+      .leftJoinAndSelect('receipt.visitTable', 'visit')
+      .leftJoin('visit.idDoctor2', 'doctor')
+      .addSelect('doctor.fio')
+      .where('receipt.date > :startDate', { startDate: date.startDate })
+      .andWhere('receipt.date < :endDate', { endDate: date.endDate })
+      .getMany();
+  }
 
+  async createServiceList(service: ListServiceTable) {
     return await this.repository.save(service);
   }
 

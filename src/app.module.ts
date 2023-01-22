@@ -29,6 +29,34 @@ import { DoctorPermission } from './entities/DoctorPermission';
 import { PermissionTable } from './entities/PermissionTable';
 import { AnimalTypeTable } from './entities/AnimalTypeTable';
 import { AnimalTypeTableModule } from './animal-type-table/animal-type-table.module';
+import { LogTableModule } from './log-table/log-table.module';
+import { LogTable } from './entities/LogTable';
+import { DiagnosTableModule } from './diagnos-table/diagnos-table.module';
+import { DiagnosTable } from './entities/DiagnosTable';
+import { ImageTableModule } from './image-table/image-table.module';
+import { ImageTable } from './entities/ImageTable';
+import { ChatMessage } from './entities/ChatMessage';
+import { ChatRoom } from './entities/ChatRoom';
+import { ChatMessageModule } from './chat-message/chat-message.module';
+import { ChatRoomModule } from './chat-room/chat-room.module';
+import { NewsModule } from './news/news.module';
+import { TypeNewsModule } from './type-news/type-news.module';
+import { ImageNewsModule } from './image-news/image-news.module';
+import { NewsTable } from './entities/NewsTable';
+import { TypeNews } from './entities/TypeNews';
+import { ImageNewsTable } from './entities/ImageNewsTable';
+
+import { MulterModule } from '@nestjs/platform-express';
+import { ImageMessageModule } from './image-message/image-message.module';
+import { ImageMessageTable } from './entities/ImageMessageTable';
+import { TypePrescriptionModule } from './type-prescription/type-prescription.module';
+import { PrescriptionTableModule } from './prescription-table/prescription-table.module';
+import { PrescriptionTable } from './entities/PrescriptionTable';
+import { TypePrescriptionTable } from './entities/TypePrescriptionTable';
+import { ListDoctorChatTableModule } from './list-doctor-chat-table/list-doctor-chat-table.module';
+import { ListUserChatTableModule } from './list-user-chat-table/list-user-chat-table.module';
+import { ListUserChatTable } from './entities/ListUserChatTable';
+import { ListDoctorChatTable } from './entities/ListDoctorChatTable';
 
 @Module({
   imports: [
@@ -37,9 +65,10 @@ import { AnimalTypeTableModule } from './animal-type-table/animal-type-table.mod
       type: 'mysql',
       host: 'localhost',
       port: 3306,
-      username: 'admin',
-      password: '2813Andrei*',
+      username: 'root',
+      password: '1234',
       database: 'vet_pass',
+      timezone: 'Z',
       entities: [
         AnimalTable,
         AnimalTypeTable,
@@ -54,6 +83,20 @@ import { AnimalTypeTableModule } from './animal-type-table/animal-type-table.mod
         ReceiptTable,
         DoctorPermission,
         PermissionTable,
+        LogTable,
+        DiagnosTable,
+        ImageTable,
+        ChatMessage,
+        ChatRoom,
+        NewsTable,
+        TypeNews,
+        ImageNewsTable,
+        ImageMessageTable,
+        PrescriptionTable,
+        TypePrescriptionTable,
+        ListUserChatTable,
+        ListMaterialTable,
+        ListDoctorChatTable,
       ],
       synchronize: true,
       logging: true,
@@ -74,7 +117,25 @@ import { AnimalTypeTableModule } from './animal-type-table/animal-type-table.mod
     VisitTableModule,
     AuthModule,
     AnimalTypeTableModule,
-    
+    LogTableModule,
+    DiagnosTableModule,
+    ImageTableModule,
+    ChatMessageModule,
+    ChatRoomModule,
+    NewsModule,
+    TypeNewsModule,
+    ImageNewsModule,
+    ImageMessageModule,
+    TypePrescriptionModule,
+    PrescriptionTableModule,
+
+    MulterModule.register({
+      dest: './files',
+    }),
+
+    ListDoctorChatTableModule,
+
+    ListUserChatTableModule,
   ],
   controllers: [AppController],
   providers: [AppService],

@@ -1,5 +1,6 @@
 import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
+import { DateBetween } from 'src/DTO/dateBetween-dto';
 import { ListMaterialTable } from 'src/entities/ListMaterialTable';
 import { InsertResult, Repository } from 'typeorm';
 
@@ -10,14 +11,36 @@ export class ListMaterialTableService {
     private repository: Repository<ListMaterialTable>,
   ) {}
 
+  async getAllMaterial() {
+    return await this.repository
+      .createQueryBuilder('list_material_table')
+      .leftJoinAndSelect('list_material_table.idMaterial2', 'material')
+      .leftJoinAndSelect('list_material_table.idReceipt2', 'receipt')
+      .leftJoinAndSelect('receipt.visitTable', 'visit')
+      .leftJoin('visit.idDoctor2', 'doctor')
+      .addSelect('doctor.fio')
+      .getMany();
+  }
+
+  async getAllMaterialByDate(date: DateBetween) {
+    return await this.repository
+      .createQueryBuilder('list_material_table')
+      .leftJoinAndSelect('list_material_table.idMaterial2', 'material')
+      .leftJoinAndSelect('list_material_table.idReceipt2', 'receipt')
+      .leftJoinAndSelect('receipt.visitTable', 'visit')
+      .leftJoin('visit.idDoctor2', 'doctor')
+      .addSelect('doctor.fio')
+      .where('receipt.date > :startDate', { startDate: date.startDate })
+      .andWhere('receipt.date < :endDate', { endDate: date.endDate })
+      .getMany();
+  }
   async getMaterialList(id: number): Promise<ListMaterialTable[]> {
     return await this.repository
       .createQueryBuilder('list_material_table')
-      .leftJoinAndSelect('list_material_table.idMaterial2', 'service')
+      .leftJoinAndSelect('list_material_table.idMaterial2', 'material')
       .where('list_material_table.idReceipt2 = :idReceipt', {
         idReceipt: id,
       })
-
       .getMany();
   }
 
@@ -37,6 +60,7 @@ export class ListMaterialTableService {
   }
 
   async deleteMaterialList(id: number) {
+    console.log('ssdfdsfafdf');
     const forRemove = await this.repository.findOneBy({
       idListMaterial: id,
     });

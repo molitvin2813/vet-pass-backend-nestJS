@@ -4,12 +4,15 @@ import {
   Index,
   JoinColumn,
   ManyToOne,
+  OneToMany,
   OneToOne,
   PrimaryGeneratedColumn,
 } from 'typeorm';
 import { DoctorTable } from './DoctorTable';
 import { AnimalTable } from './AnimalTable';
 import { ReceiptTable } from './ReceiptTable';
+import { DiagnosTable } from './DiagnosTable';
+import { PrescriptionTable } from './PrescriptionTable';
 
 @Index('id_receipt_UNIQUE', ['idReceipt'], { unique: true })
 @Index('id_doctor', ['idDoctor'], {})
@@ -18,12 +21,6 @@ import { ReceiptTable } from './ReceiptTable';
 export class VisitTable {
   @PrimaryGeneratedColumn({ type: 'int', name: 'idvisit_table' })
   idvisitTable: number;
-
-  @Column('varchar', { name: 'name', nullable: true, length: 255 })
-  name: string | null;
-
-  @Column('varchar', { name: 'diagnosis', nullable: true, length: 255 })
-  diagnosis: string | null;
 
   @Column('varchar', { name: 'anamnesis', nullable: true, length: 500 })
   anamnesis: string | null;
@@ -41,8 +38,17 @@ export class VisitTable {
   })
   isCompleted: number | null;
 
+  @OneToMany(
+    () => PrescriptionTable,
+    (prescriptionTable) => prescriptionTable.idVisit2,
+  )
+  prescriptionTables: PrescriptionTable[];
+
   @Column('int', { name: 'id_doctor', nullable: true })
   idDoctor: number | null;
+
+  @Column('int', { name: 'id_diagnosis', nullable: true })
+  idDiagnosis: number | null;
 
   @Column('int', { name: 'id_animal', nullable: true })
   idAnimal: number | null;
@@ -70,4 +76,11 @@ export class VisitTable {
   })
   @JoinColumn([{ name: 'id_receipt', referencedColumnName: 'idReceipt' }])
   idReceipt2: ReceiptTable;
+
+  @ManyToOne(() => DiagnosTable, (diagnosTable) => diagnosTable.visitTables, {
+    onDelete: 'RESTRICT',
+    onUpdate: 'RESTRICT',
+  })
+  @JoinColumn([{ name: 'id_diagnosis', referencedColumnName: 'idDiagnos' }])
+  idDiagnosis2: DiagnosTable;
 }

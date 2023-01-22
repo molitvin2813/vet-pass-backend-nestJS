@@ -6,15 +6,10 @@ import {
 } from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
 import { InjectRepository } from '@nestjs/typeorm';
-import { DeepPartial, Repository } from 'typeorm';
+import { Repository } from 'typeorm';
 
 import { DoctorTable } from '../entities/DoctorTable';
-import {
-  LoginDTO,
-  RegisterDTO,
-  UpdateUserDTO,
-  AuthResponse,
-} from 'src/models/user.model';
+import { LoginDTO, RegisterDTO, AuthResponse } from 'src/models/user.model';
 import { plainToClass } from 'class-transformer';
 
 @Injectable()
@@ -27,12 +22,12 @@ export class AuthService {
   async register(credentials: RegisterDTO): Promise<AuthResponse> {
     try {
       const user = plainToClass(DoctorTable, credentials);
-      await console.log(credentials);
       const idUser = await (await this.userRepo.save(user)).iddoctorTable;
       const payload = { login: user.login };
       const token = this.jwtService.sign(payload);
       const login = user.login;
-      return { login, token, idUser };
+      const role = user.isAdmin;
+      return { login, token, idUser, role };
     } catch (err) {
       if (err.code === '23505') {
         throw new ConflictException('login has already been taken');
@@ -45,17 +40,19 @@ export class AuthService {
     try {
       const login = dd.login;
       const user = await this.userRepo.findOne({ where: { login } });
+      if (user == null) throw new UnauthorizedException('Ошибка входа');
       const idUser = user.iddoctorTable;
-      await console.log(dd);
       const isValid = await user.comparePassword(dd.password);
-      await console.log(isValid);
       if (!isValid) {
         throw new UnauthorizedException('Ошибка входа');
       }
-      const payload = { login: user.login };
+      const role = user.isAdmin;
+      const payload = {
+        login: user.login,
+        role: role,
+      };
       const token = this.jwtService.sign(payload);
-
-      return { login, token, idUser };
+      return { login, token, idUser, role };
     } catch (err) {
       throw new UnauthorizedException(err.message);
     }

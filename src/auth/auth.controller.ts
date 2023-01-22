@@ -16,10 +16,15 @@ import {
 } from '../models/user.model';
 import { ResponseObject } from 'src/models/response.model';
 import { DoctorTable } from 'src/entities/DoctorTable';
+import { AuthClientService } from './auth-client.service';
+import { ClientTable } from 'src/entities/ClientTable';
 
 @Controller('users')
 export class AuthController {
-  constructor(private authService: AuthService) {}
+  constructor(
+    private authService: AuthService,
+    private authClientService: AuthClientService,
+  ) {}
 
   @Post('/register')
   @ApiCreatedResponse({ description: 'User Registration' })
@@ -27,8 +32,16 @@ export class AuthController {
   register(
     @Body(ValidationPipe) credentials: RegisterDTO,
   ): Promise<AuthResponse> {
-    console.log(credentials);
     return this.authService.register(credentials);
+  }
+
+  @Post('/register/client')
+  @ApiCreatedResponse({ description: 'Client Registration' })
+  @ApiBody({ type: RegisterBody })
+  registerClient(
+    @Body(ValidationPipe) credentials: ClientTable,
+  ): Promise<AuthResponse> {
+    return this.authClientService.registerClient(credentials);
   }
 
   @Post('/login')
@@ -37,5 +50,16 @@ export class AuthController {
   @ApiBody({ type: LoginBody })
   login(@Body(ValidationPipe) credentials: LoginDTO): Promise<AuthResponse> {
     return this.authService.login(credentials);
+  }
+
+  @Post('/login/client')
+  @ApiOkResponse({ description: 'User Login' })
+  @ApiUnauthorizedResponse({ description: 'Invalid credentials' })
+  @ApiBody({ type: LoginBody })
+  loginClient(
+    @Body(ValidationPipe) credentials: LoginDTO,
+  ): Promise<AuthResponse> {
+    console.log('sdfsdf');
+    return this.authClientService.loginClient(credentials);
   }
 }

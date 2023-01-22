@@ -5,6 +5,7 @@ import {
   MinLength,
   MaxLength,
   IsOptional,
+  IsNotEmpty,
 } from 'class-validator';
 
 export class LoginDTO {
@@ -38,13 +39,15 @@ export class UpdateUserBody {
 
 export interface AuthPayload {
   login: string;
+  role: number;
 }
 
 export interface UserResponse {
   login: string;
+  idUser: number;
 }
 
 export interface AuthResponse extends UserResponse {
   token: string;
-  idUser: number;
+  role: number;
 }

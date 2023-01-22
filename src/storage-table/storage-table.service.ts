@@ -1,8 +1,9 @@
 import { Injectable } from '@nestjs/common';
 
 import { InjectRepository } from '@nestjs/typeorm';
+import { DateBetween } from 'src/DTO/dateBetween-dto';
 import { StorageTable } from 'src/entities/StorageTable';
-import { Repository } from 'typeorm';
+import { InsertResult, Repository } from 'typeorm';
 
 @Injectable()
 export class StorageTableService {
@@ -15,36 +16,29 @@ export class StorageTableService {
     return await this.repository
       .createQueryBuilder('storage_table')
       .leftJoinAndSelect('storage_table.idMaterial2', 'material')
-      .select([
-        'storage_table.count',
-        'storage_table.receipt_date',
-        'storage_table.idMaterial',
-        'storage_table.receiptDate',
-      ])
-      .addSelect(['material.name', 'material.cost', 'material.expirationDate'])
       .getMany();
   }
 
+  async getAllStorageByDate(date: DateBetween) {
+    return await this.repository
+      .createQueryBuilder('storage_table')
+      .leftJoinAndSelect('storage_table.idMaterial2', 'material')
+      .where('storage_table.date > :startDate', { startDate: date.startDate })
+      .andWhere('storage_table.date < :endDate', { endDate: date.endDate })
+      .getMany();
+  }
   async getSomeStorage(id: number): Promise<StorageTable> {
     return await this.repository
       .createQueryBuilder('storage_table')
       .leftJoinAndSelect('storage_table.idMaterial2', 'material')
-      .select([
-        'storage_table.count',
-        'storage_table.receipt_date',
-        'storage_table.idMaterial',
-        'storage_table.receiptDate',
-      ])
       .where('storage_table.idStorageTable = :idStorageTable', {
         idStorageTable: id,
       })
-      .addSelect(['material.name', 'material.cost', 'material.expirationDate'])
       .getOne();
   }
 
-  async createStorage(storage: StorageTable): Promise<boolean> {
-    this.repository.insert(storage);
-    return true;
+  async createStorage(storage: StorageTable): Promise<InsertResult> {
+    return this.repository.insert(storage);
   }
 
   async updateStorage(id: number, storage: StorageTable) {

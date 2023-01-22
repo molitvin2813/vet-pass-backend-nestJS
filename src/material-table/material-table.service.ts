@@ -17,8 +17,9 @@ export class MaterialTableService {
       .select([
         'material_table.name',
         'material_table.cost',
-        'material_table.dosage',
-        'material_table.expirationDate',
+        'material_table.comment',
+        'material_table.count',
+        'material_table.measure',
         'material_table.idmaterialListTable',
       ])
       .getMany();
@@ -30,8 +31,9 @@ export class MaterialTableService {
       .select([
         'material_table.name',
         'material_table.cost',
-        'material_table.dosage',
-        'material_table.expirationDate',
+        'material_table.comment',
+        'material_table.count',
+        'material_table.measure',
         'material_table.idmaterialListTable',
       ])
       .where('material_table.idmaterialListTable = :idMaterialTable', {
@@ -41,7 +43,7 @@ export class MaterialTableService {
   }
 
   async createStorage(material: MaterialTable): Promise<InsertResult> {
-      return this.repository.insert(material);
+    return this.repository.insert(material);
   }
 
   async updateStorage(id: number, material: MaterialTable) {

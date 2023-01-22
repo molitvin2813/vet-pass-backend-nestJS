@@ -9,6 +9,7 @@ import {
 } from 'typeorm';
 import { ListMaterialTable } from './ListMaterialTable';
 import { ListServiceTable } from './ListServiceTable';
+import { LogTable } from './LogTable';
 import { VisitTable } from './VisitTable';
 
 @Entity('receipt_table', { schema: 'vet_pass' })
@@ -51,6 +52,9 @@ export class ReceiptTable {
     (listServiceTable) => listServiceTable.idReceipt2,
   )
   listServiceTables: ListServiceTable[];
+
+  @OneToMany(() => LogTable, (logTable) => logTable.idDoctor2)
+  logTables: LogTable[];
 
   @OneToOne(() => VisitTable, (visitTable) => visitTable.idReceipt2)
   visitTable: VisitTable;

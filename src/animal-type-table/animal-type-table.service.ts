@@ -2,7 +2,7 @@ import { Injectable } from '@nestjs/common';
 
 import { InjectRepository } from '@nestjs/typeorm';
 import { AnimalTypeTable } from 'src/entities/AnimalTypeTable';
-import { Repository } from 'typeorm';
+import { InsertResult, Repository } from 'typeorm';
 
 @Injectable()
 export class AnimalTypeTableService {
@@ -17,9 +17,10 @@ export class AnimalTypeTableService {
       .getMany();
   }
 
-  async createSomeAnimalType(newAnimal: AnimalTypeTable): Promise<boolean> {
-    this.typeRepository.insert(newAnimal);
-    return true;
+  async createSomeAnimalType(
+    newAnimal: AnimalTypeTable,
+  ): Promise<InsertResult> {
+    return this.typeRepository.insert(newAnimal);
   }
 
   async getSomeAnimalType(id: number): Promise<AnimalTypeTable> {

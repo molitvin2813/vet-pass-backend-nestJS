@@ -9,6 +9,7 @@ import {
 } from 'typeorm';
 import { AnimalTypeTable } from './AnimalTypeTable';
 import { ClientTable } from './ClientTable';
+import { ImageTable } from './ImageTable';
 import { VisitTable } from './VisitTable';
 
 @Index('id_client', ['idClient'], {})
@@ -23,7 +24,11 @@ export class AnimalTable {
   @Column('varchar', { name: 'gender', nullable: true, length: 20 })
   gender: string | null;
 
-  @Column('tinyint', { name: 'is_castrated', nullable: true })
+  @Column('tinyint', {
+    name: 'is_castrated',
+    nullable: true,
+    default: () => "'0'",
+  })
   isCastrated: number | null;
 
   @Column('float', { name: 'weight', nullable: true, precision: 12 })
@@ -55,4 +60,8 @@ export class AnimalTable {
 
   @OneToMany(() => VisitTable, (visitTable) => visitTable.idAnimal2)
   visitTables: VisitTable[];
+
+  @OneToMany(() => ImageTable, (imageTable) => imageTable.idAnimal2)
+  imageTables: ImageTable[];
+
 }
