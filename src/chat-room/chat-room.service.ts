@@ -11,13 +11,19 @@ export class ChatRoomService {
     private repository: Repository<ChatRoom>,
   ) {}
 
-  async getAll(id: number) {
+  async getAllChatRoom() {
+    return await this.repository
+      .createQueryBuilder('chat_room')
+      .select('chat_room')
+      .orderBy('chat_room.lastMessageDate', 'DESC')
+      .getMany();
+  }
+
+  async getAllByDoctor(id: number) {
     console.log(id);
     return await this.repository
       .createQueryBuilder('chat_room')
       .select('chat_room')
-      .leftJoinAndSelect('chat_room.idClient2', 'idClient2')
-      .leftJoinAndSelect('chat_room.idDoctor2', 'idDoctor2')
       .where('idDoctor2.iddoctorTable = :iddoctorTable', { iddoctorTable: id })
       .orderBy('chat_room.lastMessageDate', 'DESC')
       .getMany();
@@ -31,8 +37,6 @@ export class ChatRoomService {
     return await this.repository
       .createQueryBuilder('chat_room')
       .select('chat_room')
-      .leftJoinAndSelect('chat_room.idClient2', 'idClient2')
-      .leftJoinAndSelect('chat_room.idDoctor2', 'idDoctor2')
       .where('idClient2.idClient = :idClient', { idClient: id })
       .getMany();
   }

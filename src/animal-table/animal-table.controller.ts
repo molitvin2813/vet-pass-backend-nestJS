@@ -7,6 +7,8 @@ import {
   Delete,
   Param,
   UseGuards,
+  HttpException,
+  HttpStatus,
 } from '@nestjs/common';
 import { plainToInstance } from 'class-transformer';
 import { JwtAuthGuard } from 'src/auth/jwt-auth.guard';
@@ -39,10 +41,20 @@ export class AnimalTableController {
   @Post()
   @UseGuards(JwtAuthGuard)
   @Roles(Role.USER, Role.ADMIN, Role.CLIENT)
-  postSomeAnimal(@Body() req: AnimalDto) {
+  async postSomeAnimal(@Body() req: AnimalDto) {
     const newAnimal = plainToInstance(AnimalTable, req);
-    console.log(req);
-    return this.service.createAnimal(newAnimal);
+    const animals = await this.service.getAllAnimalsByClient(
+      newAnimal.idClient,
+    );
+    if (animals.length <= 10) return this.service.createAnimal(newAnimal);
+    else
+      throw new HttpException(
+        {
+          status: HttpStatus.FORBIDDEN,
+          error: 'Max count animals',
+        },
+        HttpStatus.FORBIDDEN,
+      );
   }
 
   @Get(':id')

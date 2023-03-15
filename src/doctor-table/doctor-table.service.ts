@@ -66,11 +66,11 @@ export class DoctorTableService {
         'doctor_table.color',
         'doctor_table.iddoctorTable',
       ])
-
       .innerJoinAndSelect('doctor_table.visitTables', 'visitTables')
       .innerJoinAndSelect('visitTables.idAnimal2', 'idAnimal2')
       .innerJoinAndSelect('visitTables.idDoctor2', 'idDoctor2')
       .innerJoinAndSelect('visitTables.idReceipt2', 'idReceipt2')
+      .innerJoinAndSelect('idAnimal2.idClient2', 'idClient2')
       .where('visitTables.visitTime = :visitTime', { visitTime: date })
       .getMany();
   }

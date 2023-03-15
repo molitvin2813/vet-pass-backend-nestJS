@@ -18,11 +18,18 @@ import { ChatRoomService } from './chat-room.service';
 export class ChatRoomController {
   constructor(private service: ChatRoomService) {}
 
+  @Get()
+  @UseGuards(JwtAuthGuard)
+  @Roles(Role.USER, Role.ADMIN, Role.CLIENT)
+  getAllChatRoom(@Param('id') id: number) {
+    return this.service.getAllChatRoom();
+  }
+
   @Get('doctor/:id')
   @UseGuards(JwtAuthGuard)
   @Roles(Role.USER, Role.ADMIN, Role.CLIENT)
   getAllClient(@Param('id') id: number) {
-    return this.service.getAll(id);
+    return this.service.getAllByDoctor(id);
   }
 
   @Get('client/:id')

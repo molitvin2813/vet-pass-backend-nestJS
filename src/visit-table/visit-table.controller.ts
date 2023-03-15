@@ -66,6 +66,17 @@ export class VisitTableController {
     return this.service.getVisitsByDate(req, is_admin, id_doctor);
   }
 
+  @Post('animal/date')
+  @UseGuards(JwtAuthGuard)
+  @Roles(Role.ADMIN, Role.CLIENT, Role.USER)
+  getVisitByDateAndByAnimal(
+    @Req() request: Request,
+    @Body() req: DateBetweenVisit,
+  ) {
+    const { id_animal } = request.headers;
+    return this.service.getVisitsByDateAndByAnimal(req, id_animal);
+  }
+
   @Get('animal/uncompleted/:id_animal')
   @UseGuards(JwtAuthGuard)
   @Roles(Role.ADMIN, Role.CLIENT, Role.USER)
@@ -80,22 +91,43 @@ export class VisitTableController {
     return this.service.getVisitsByAnimal(id_animal, 1);
   }
 
-  @Post('animal/date')
-  getVisitByDateAndByAnimal(
-    @Req() request: Request,
-    @Body() req: DateBetweenVisit,
-  ) {
-    const { id_animal } = request.headers;
-    return this.service.getVisitsByDateAndByAnimal(req, id_animal);
-  }
-
   @Post('client/date')
+  @UseGuards(JwtAuthGuard)
+  @Roles(Role.ADMIN, Role.CLIENT, Role.USER)
   getVisitByDateAndByClient(
     @Req() request: Request,
     @Body() req: DateBetweenVisit,
   ) {
     const { id_client } = request.headers;
     return this.service.getVisitsByDateAndByClient(req, id_client);
+  }
+
+  @Get('client/completed/:id')
+  @UseGuards(JwtAuthGuard)
+  @Roles(Role.ADMIN, Role.CLIENT, Role.USER)
+  getVisitByClientCompleted(@Param('id') id: number) {
+    return this.service.getByClientCompleted(id);
+  }
+
+  @Get('client/uncompleted/:id')
+  @UseGuards(JwtAuthGuard)
+  @Roles(Role.ADMIN, Role.CLIENT, Role.USER)
+  getVisitByClientUncompleted(@Param('id') id: number) {
+    return this.service.getByClientUncompleted(id);
+  }
+
+  @Get('client/completed/fio/:fio')
+  @UseGuards(JwtAuthGuard)
+  @Roles(Role.ADMIN, Role.CLIENT, Role.USER)
+  getCompletedVisitByClientFIO(@Param('fio') fio: string) {
+    return this.service.getCompletedVisitByClientFIO(fio);
+  }
+
+  @Get('client/uncompleted/fio/:fio')
+  @UseGuards(JwtAuthGuard)
+  @Roles(Role.ADMIN, Role.CLIENT, Role.USER)
+  getUncompletedVisitByClientFIO(@Param('fio') fio: string) {
+    return this.service.getUncompletedVisitByClientFIO(fio);
   }
 
   @Get(':id')

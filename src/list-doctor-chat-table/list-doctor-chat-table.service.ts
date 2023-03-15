@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common';
+import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
 import { ListDoctorChatTable } from 'src/entities/ListDoctorChatTable';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
@@ -20,7 +20,19 @@ export class ListDoctorChatTableService {
   }
 
   async create(newClient: ListDoctorChatTable) {
-    return this.repository.insert(newClient);
+    const count = await this.repository.findAndCount({
+      where: { idChatRoom: newClient.idChatRoom, idDoctor: newClient.idDoctor },
+    });
+    if (count[1] == 0) return this.repository.insert(newClient);
+    else {
+      throw new HttpException(
+        {
+          status: HttpStatus.FORBIDDEN,
+          error: 'already exists',
+        },
+        HttpStatus.FORBIDDEN,
+      );
+    }
   }
 
   async getSomeByRoom(id: number): Promise<ListDoctorChatTable[]> {

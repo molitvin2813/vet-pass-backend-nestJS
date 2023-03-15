@@ -250,6 +250,190 @@ export class VisitTableService {
       .getMany();
   }
 
+  async getCompletedVisitByClientFIO(fio: string): Promise<VisitTable[]> {
+    return await this.repository
+      .createQueryBuilder('visit_table')
+      .leftJoinAndSelect('visit_table.idDoctor2', 'doctor')
+      .leftJoinAndSelect('visit_table.idAnimal2', 'animal')
+      .leftJoinAndSelect('animal.idClient2', 'client')
+      .select([
+        'visit_table.idvisitTable',
+        'visit_table.anamnesis',
+        'visit_table.id_diagnosis',
+        'visit_table.visitTime',
+        'visit_table.time',
+        'visit_table.idReceipt',
+        'visit_table.idAnimal',
+        'visit_table.idDoctor',
+        'visit_table.isCompleted',
+      ])
+      .addSelect([
+        'doctor.iddoctorTable',
+        'doctor.fio',
+        'animal.idAnimal',
+        'animal.name',
+        'animal.gender',
+        'animal.isCastrated',
+        'animal.weight',
+        'animal.age',
+        'animal.idType',
+        'animal.idClient',
+        'client.fio',
+        'client.phone',
+        'client.email',
+      ])
+      .leftJoinAndSelect('visit_table.idReceipt2', 'receipt')
+      .leftJoinAndSelect('animal.idType2', 'type')
+      .leftJoinAndSelect('visit_table.idDiagnosis2', 'diagnosis')
+      .where('client.fio like :fio', {
+        fio: `%${fio}%`,
+      })
+      .andWhere('visit_table.isCompleted = :isCompleted', {
+        isCompleted: 1,
+      })
+      .orderBy('visit_table.visitTime', 'ASC')
+      .addOrderBy('visit_table.time', 'ASC')
+      .getMany();
+  }
+
+  async getUncompletedVisitByClientFIO(fio: string): Promise<VisitTable[]> {
+    return await this.repository
+      .createQueryBuilder('visit_table')
+      .leftJoinAndSelect('visit_table.idDoctor2', 'doctor')
+      .leftJoinAndSelect('visit_table.idAnimal2', 'animal')
+      .leftJoinAndSelect('animal.idClient2', 'client')
+      .select([
+        'visit_table.idvisitTable',
+        'visit_table.anamnesis',
+        'visit_table.id_diagnosis',
+        'visit_table.visitTime',
+        'visit_table.time',
+        'visit_table.idReceipt',
+        'visit_table.idAnimal',
+        'visit_table.idDoctor',
+        'visit_table.isCompleted',
+      ])
+      .addSelect([
+        'doctor.iddoctorTable',
+        'doctor.fio',
+        'animal.idAnimal',
+        'animal.name',
+        'animal.gender',
+        'animal.isCastrated',
+        'animal.weight',
+        'animal.age',
+        'animal.idType',
+        'animal.idClient',
+        'client.fio',
+        'client.phone',
+        'client.email',
+      ])
+      .leftJoinAndSelect('visit_table.idReceipt2', 'receipt')
+      .leftJoinAndSelect('animal.idType2', 'type')
+      .leftJoinAndSelect('visit_table.idDiagnosis2', 'diagnosis')
+      .where('client.fio like :fio', {
+        fio: `%${fio}%`,
+      })
+      .andWhere('visit_table.isCompleted = :isCompleted', {
+        isCompleted: 0,
+      })
+      .orderBy('visit_table.visitTime', 'ASC')
+      .addOrderBy('visit_table.time', 'ASC')
+      .getMany();
+  }
+
+  async getByClientUncompleted(idClient: number): Promise<VisitTable[]> {
+    return await this.repository
+      .createQueryBuilder('visit_table')
+      .leftJoinAndSelect('visit_table.idDoctor2', 'doctor')
+      .leftJoinAndSelect('visit_table.idAnimal2', 'animal')
+      .leftJoinAndSelect('animal.idClient2', 'client')
+      .select([
+        'visit_table.idvisitTable',
+        'visit_table.anamnesis',
+        'visit_table.id_diagnosis',
+        'visit_table.visitTime',
+        'visit_table.time',
+        'visit_table.idReceipt',
+        'visit_table.idAnimal',
+        'visit_table.idDoctor',
+        'visit_table.isCompleted',
+      ])
+      .addSelect([
+        'doctor.iddoctorTable',
+        'doctor.fio',
+        'animal.idAnimal',
+        'animal.name',
+        'animal.gender',
+        'animal.isCastrated',
+        'animal.weight',
+        'animal.age',
+        'animal.idType',
+        'animal.idClient',
+        'client.fio',
+        'client.phone',
+        'client.email',
+      ])
+      .leftJoinAndSelect('visit_table.idReceipt2', 'receipt')
+      .leftJoinAndSelect('animal.idType2', 'type')
+      .leftJoinAndSelect('visit_table.idDiagnosis2', 'diagnosis')
+      .where('client.idClient = :idClient', {
+        idClient: idClient,
+      })
+      .andWhere('visit_table.isCompleted = :isCompleted', {
+        isCompleted: 0,
+      })
+      .orderBy('visit_table.visitTime', 'ASC')
+      .addOrderBy('visit_table.time', 'ASC')
+      .getMany();
+  }
+
+  async getByClientCompleted(idClient: number): Promise<VisitTable[]> {
+    return await this.repository
+      .createQueryBuilder('visit_table')
+      .leftJoinAndSelect('visit_table.idDoctor2', 'doctor')
+      .leftJoinAndSelect('visit_table.idAnimal2', 'animal')
+      .leftJoinAndSelect('animal.idClient2', 'client')
+      .select([
+        'visit_table.idvisitTable',
+        'visit_table.anamnesis',
+        'visit_table.id_diagnosis',
+        'visit_table.visitTime',
+        'visit_table.time',
+        'visit_table.idReceipt',
+        'visit_table.idAnimal',
+        'visit_table.idDoctor',
+        'visit_table.isCompleted',
+      ])
+      .addSelect([
+        'doctor.iddoctorTable',
+        'doctor.fio',
+        'animal.idAnimal',
+        'animal.name',
+        'animal.gender',
+        'animal.isCastrated',
+        'animal.weight',
+        'animal.age',
+        'animal.idType',
+        'animal.idClient',
+        'client.fio',
+        'client.phone',
+        'client.email',
+      ])
+      .leftJoinAndSelect('visit_table.idReceipt2', 'receipt')
+      .leftJoinAndSelect('animal.idType2', 'type')
+      .leftJoinAndSelect('visit_table.idDiagnosis2', 'diagnosis')
+      .where('client.idClient = :idClient', {
+        idClient: idClient,
+      })
+      .andWhere('visit_table.isCompleted = :isCompleted', {
+        isCompleted: 1,
+      })
+      .orderBy('visit_table.visitTime', 'ASC')
+      .addOrderBy('visit_table.time', 'ASC')
+      .getMany();
+  }
+
   async getVisitsByDateAndByClient(
     req: DateBetweenVisit,
     id_client: string | string[],
